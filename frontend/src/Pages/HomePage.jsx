@@ -14,15 +14,7 @@ const HomePage = () => {
   const ApiUrl = import.meta.env.VITE_API_URL;
 
   const fetchUser = () => {
-    fetch(`${ApiUrl}/getuser`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        _id: user,
-      }),
-    })
+    fetch(`${ApiUrl}/getuser/${user}`)
       .then((responce) => responce.json())
       .then((json) => {
         if (json.error) {

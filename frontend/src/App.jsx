@@ -5,6 +5,7 @@ import { UserContext } from "./Context";
 import LoginPage from "./Pages/LoginPage";
 import ProtectedRoute from "./ProtectedRoute";
 import HomePage from "./Pages/HomePage";
+import ProfilePage from "./Pages/ProfilePage";
 
 function App() {
   
@@ -17,6 +18,7 @@ function App() {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<ProtectedRoute> <HomePage/> </ProtectedRoute>} />
+          <Route path="/user/:id" element={<ProtectedRoute> <ProfilePage/> </ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>

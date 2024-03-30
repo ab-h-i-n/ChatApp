@@ -4,17 +4,16 @@ import { UserContext } from "../Context";
 import { Link } from "react-router-dom";
 import Tabs from "./Tabs";
 
-const Header = ({activeTab,setActiveTab}) => {
-  
+const Header = ({ activeTab, setActiveTab }) => {
   const { userData } = useContext(UserContext);
 
   return (
-    <div className=" w-full top-0 bg-themeNavyDark">
-      <div className=" p-5 flex items-center justify-between">
+    <div className="z-50 h-[16.5vh] lg:h-[15vh] sticky top-0 w-full bg-themeNavyDark">
+      <div className="p-5 flex items-center justify-between">
         {/* logo  */}
         <div className="text-4xl font-semibold text-themeOrange">ChatBox</div>
         {/* profile button  */}
-        <Link to={"/profile"} className="bg-themeNavyLight p-1 rounded-full">
+        <Link to={`/user/${userData._id}`} className="bg-themeNavyLight p-1 rounded-full">
           <ProfileIcon src={userData.profilePhoto} />
         </Link>
       </div>

@@ -33,6 +33,7 @@ router.post('/signup', (req, res) => {
                         const newUser = new User({
                             name: req.body.name,
                             email: req.body.email,
+                            about : 'Online',
                             password: hash,
                             profilePhoto: req.body.profilePhoto,
                             createdAt: getTimeStamp()
@@ -149,14 +150,18 @@ router.post('/checkuserexist', (req, res) => {
 })
 
 
-router.post('/getuser', (req, res) => {
+router.get('/getuser/:id', (req, res) => {
 
-    User.findOne({ _id: req.body._id })
+    const id = req.params.id;
+
+    User.findOne({ _id: id })
         .then(user => {
             if (user) {
                 res.json({
                     data: {
+                        _id : user._id,
                         name: user.name,
+                        about : user.about,
                         email: user.email,
                         profilePhoto: user.profilePhoto,
                         createdAt: user.createdAt
@@ -180,17 +185,25 @@ router.post('/getuser', (req, res) => {
 })
 
 
-router.get('/allusers',(req,res)=>{
+router.post('/allusers', (req, res) => {
 
-    User.find({})
-    .then(users => {
-        res.json(users)
-    })
-    .catch(error => {
-        res.status(404).json("Failed to find users!")
-    })
+    const currentUser = req.body._id;
 
-})
+    User.find({ _id: { $ne: currentUser } }) 
+        .then(users => {
+            res.json({
+                data : users,
+                error : null
+            });
+        })
+        .catch(error => {
+            res.status(404).json({
+                data : null,
+                error : "Failed to find users!"
+            });
+        });
+});
+
 
 
 export default router;

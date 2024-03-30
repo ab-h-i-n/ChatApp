@@ -1,23 +1,30 @@
 import React, { useEffect, useRef } from "react";
-import AllChats from "./AllChats";
-import AllUsers from "./AllUsers";
+import AllChats from "../Pages/AllChats";
+import AllUsers from "../Pages/AllUsers";
+import Friends from "../Pages/Friends";
 
 const MainScreen = ({ activeTab }) => {
   const allChatsRef = useRef(null);
   const allUsersRef = useRef(null);
+  const friends = useRef(null);
 
   useEffect(() => {
     if (activeTab === 0) {
       allChatsRef.current.scrollIntoView({ behavior: "smooth" });
     } else if (activeTab === 1) {
+      friends.current.scrollIntoView({ behavior: "smooth" });
+    } else if (activeTab === 2) {
       allUsersRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [activeTab]);
 
   return (
-    <div className="w-full flex overflow-hidden">
-      <div ref={allChatsRef} className="w-full">
+    <div className="w-full flex overflow-hidden sticky top-20">
+      <div ref={allChatsRef} className="w-full ">
         <AllChats />
+      </div>
+      <div ref={friends} className="w-full">
+        <Friends />
       </div>
       <div ref={allUsersRef} className="w-full">
         <AllUsers />

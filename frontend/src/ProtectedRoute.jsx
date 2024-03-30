@@ -3,8 +3,8 @@ import { Navigate } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
 
 const ProtectedRoute = ({ children }) => {
-  const user = secureLocalStorage.getItem("user");
-
+  var user = secureLocalStorage.getItem("user");
+  console.log("user",user);
   return <>{user ? children : <Navigate to={"/login"} />}</>;
 };
 
