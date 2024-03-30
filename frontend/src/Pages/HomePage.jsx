@@ -2,10 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import Header from "../Components/Header";
 import { UserContext } from "../Context";
 import secureLocalStorage from "react-secure-storage";
+import MainScreen from "../Components/MainScreen";
 
 const HomePage = () => {
   const { userData, setUserData } = useContext(UserContext);
   const [isLoading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState(0);
 
   const user = secureLocalStorage.getItem("user");
 
@@ -49,8 +51,9 @@ const HomePage = () => {
           <div className="loader w-20 "></div>
         </div>
       ) : (
-        <div>
-          <Header />
+        <div className={`xl:max-w-[600px]`}>
+          <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+          <MainScreen activeTab={activeTab}/>
         </div>
       )}
     </>

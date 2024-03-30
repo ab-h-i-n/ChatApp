@@ -95,7 +95,7 @@ const LoginPage = () => {
           {/* signup link  */}
           <span className="text-center">
             Don't have an account?{" "}
-            <Link to={"/signup"} className="text-themeOrange font-semibold">
+            <Link to={!isLoading && "/signup"} className={`${isLoading && "opacity-50"} text-themeOrange font-semibold`}>
               Sign Up
             </Link>
           </span>
