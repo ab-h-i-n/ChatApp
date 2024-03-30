@@ -173,12 +173,24 @@ router.post('/getuser', (req, res) => {
         .catch(error => {
             res.status(404).json({
                 data : null,
-                error: "Failed to fetch user"
+                error: "User does not exists!"
             })
         })
 
 })
 
+
+router.get('/allusers',(req,res)=>{
+
+    User.find({})
+    .then(users => {
+        res.json(users)
+    })
+    .catch(error => {
+        res.status(404).json("Failed to find users!")
+    })
+
+})
 
 
 export default router;
