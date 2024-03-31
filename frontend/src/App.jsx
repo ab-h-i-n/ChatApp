@@ -7,6 +7,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import HomePage from "./Pages/HomePage";
 import ProfilePage from "./Pages/ProfilePage";
 
+
 function App() {
   
   const [userData, setUserData] = useState();

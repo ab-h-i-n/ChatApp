@@ -24,6 +24,10 @@ const UserSchema = mongoose.Schema({
     createdAt: {
         type: String,
         required: true
+    },
+    onlineStatus:{
+        type: Boolean,
+        required : true
     }
 });
 

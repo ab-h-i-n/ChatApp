@@ -33,10 +33,11 @@ router.post('/signup', (req, res) => {
                         const newUser = new User({
                             name: req.body.name,
                             email: req.body.email,
-                            about : 'Online',
+                            about: 'none',
                             password: hash,
                             profilePhoto: req.body.profilePhoto,
-                            createdAt: getTimeStamp()
+                            createdAt: getTimeStamp(),
+                            onlineStatus: false
                         });
 
 
@@ -44,7 +45,7 @@ router.post('/signup', (req, res) => {
                             .then(user => {
                                 res.json({
                                     data: {
-                                        _id : user._id
+                                        _id: user._id
                                     },
                                     error: null
                                 })
@@ -93,7 +94,7 @@ router.post('/login', (req, res) => {
 
                             res.json({
                                 data: {
-                                    _id : user._id
+                                    _id: user._id
                                 },
                                 error: null
                             })
@@ -159,25 +160,26 @@ router.get('/getuser/:id', (req, res) => {
             if (user) {
                 res.json({
                     data: {
-                        _id : user._id,
+                        _id: user._id,
                         name: user.name,
-                        about : user.about,
+                        about: user.about,
                         email: user.email,
                         profilePhoto: user.profilePhoto,
-                        createdAt: user.createdAt
+                        createdAt: user.createdAt,
+                        onlineStatus: user.onlineStatus
                     },
-                    error : null
+                    error: null
                 })
             } else {
                 res.status(404).json({
-                    data : null,
+                    data: null,
                     error: "User does not exists!"
                 })
             }
         })
         .catch(error => {
             res.status(404).json({
-                data : null,
+                data: null,
                 error: "User does not exists!"
             })
         })
@@ -186,24 +188,74 @@ router.get('/getuser/:id', (req, res) => {
 
 
 router.post('/allusers', (req, res) => {
-
     const currentUser = req.body._id;
 
-    User.find({ _id: { $ne: currentUser } }) 
+    User.find({ _id: { $ne: currentUser } }, '_id name about profilePhoto onlineStatus')
         .then(users => {
             res.json({
-                data : users,
-                error : null
+                data: users,
+                error: null
             });
         })
         .catch(error => {
             res.status(404).json({
-                data : null,
-                error : "Failed to find users!"
+                data: null,
+                error: "Failed to find users!"
             });
         });
 });
 
+router.put('/edit/:key', (req, res) => {
+
+    const key = req.params.key;
+
+    User.findOne({ _id: req.body._id })
+        .then(user => {
+
+            if (user) {
+
+                switch (key) {
+                    case "name":
+                        user.name = req.body.name
+                        break;
+                    case "about":
+                        user.about = req.body.about
+                        break;
+                    case "profilePhoto":
+                        user.profilePhoto = req.body.profilePhoto
+                        break
+                    default:
+                        res.status(404).json({
+                            data: null,
+                            error: 'Invalid key!'
+                        })
+                        return;
+                }
+
+                user.save().then(updatedUser => {
+                    res.json({
+                        error: null,
+                        data: {
+                            _id: updatedUser._id,
+                            createdAt: updatedUser.createdAt,
+                            name: updatedUser.name,
+                            about: updatedUser.about,
+                            profilePhoto: updatedUser.profilePhoto,
+                            email: updatedUser.email,
+                            onlineStatus: updatedUser.onlineStatus
+                        }
+                    })
+                })
+
+            } else {
+                res.status(404).json({
+                    data: null,
+                    error: 'User not found!'
+                })
+            }
+
+        })
+})
 
 
 export default router;

@@ -3,6 +3,7 @@ import Header from "../Components/Header";
 import { UserContext } from "../Context";
 import secureLocalStorage from "react-secure-storage";
 import MainScreen from "../Components/MainScreen";
+import io from "socket.io-client";
 
 const HomePage = () => {
   const { userData, setUserData } = useContext(UserContext);
@@ -23,10 +24,23 @@ const HomePage = () => {
           setUserData(json.data);
         }
       })
-    .then(() => {
-      setLoading(false);
-    });
+      .then(() => {
+        setLoading(false);
+      });
   };
+
+  useEffect(() => {
+    const socket = io(ApiUrl, {
+      auth: {
+        token: user,
+      },
+    });
+
+    socket.on("connect",()=>{
+      console.log("connected");
+    });
+
+  },[]);
 
   useEffect(() => {
     console.log(userData);
@@ -45,7 +59,7 @@ const HomePage = () => {
       ) : (
         <div className={`xl:max-w-[600px]`}>
           <Header activeTab={activeTab} setActiveTab={setActiveTab} />
-          <MainScreen activeTab={activeTab}/>
+          <MainScreen activeTab={activeTab} />
         </div>
       )}
     </>

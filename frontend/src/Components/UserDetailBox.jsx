@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from "react";
+import EditModal from "./EditModal";
 
 const UserDetailBox = ({ thisUser, title, value, isEditable, isOwner }) => {
   const [icon, setIcon] = useState("/user.svg");
+  const [editKey, setEditKey] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleEdit = () => {
+    setModalOpen(true);
+  };
 
   useEffect(() => {
     if (title == "Name") {
       setIcon("/user.svg");
+      setEditKey("name");
     } else if (title == "About") {
+      setEditKey("about");
       setIcon("/info.svg");
     } else if (title == "Email") {
       setIcon("/email.svg");
@@ -15,6 +24,13 @@ const UserDetailBox = ({ thisUser, title, value, isEditable, isOwner }) => {
 
   return (
     <>
+      <EditModal
+        title={title}
+        changeKey={editKey}
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        defaultValue={value}
+      />
       {/* name  container*/}
       <div className="flex items-center justify-between gap-x-5 py-5">
         {/* icon  */}
@@ -31,7 +47,9 @@ const UserDetailBox = ({ thisUser, title, value, isEditable, isOwner }) => {
 
         {/* edit icon  */}
         {isEditable && isOwner ? (
-          <img src="/pen.svg" alt="edit" className="w-6" />
+          <div onClick={handleEdit} className="cursor-pointer hover:brightness-200">
+            <img src="/pen.svg" alt="edit" className="w-6" />
+          </div>
         ) : (
           ""
         )}

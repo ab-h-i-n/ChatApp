@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import UserDetailBox from "../Components/UserDetailBox";
 import UserProfilePhoto from "../Components/UserProfilePhoto";
 import SubmitButton from "../Components/SubmitButton";
+import { UserContext } from "../Context";
 
 const ProfilePage = () => {
   const [isOwner, setOwner] = useState(false);
@@ -14,10 +15,13 @@ const ProfilePage = () => {
   const [isLoading, setLoading] = useState(true);
   const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
+  const {userData} = useContext(UserContext);
+
 
   const ApiUrl = import.meta.env.VITE_API_URL;
 
   const fetchUser = () => {
+    setLoading(true);
     fetch(`${ApiUrl}/getuser/${id}`)
       .then((responce) => responce.json())
       .then((json) => {
@@ -54,13 +58,13 @@ const ProfilePage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(thisUser);
-  }, [thisUser]);
+  // useEffect(() => {
+  //   console.log(thisUser);
+  // }, [thisUser]);
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, [userData]);
 
   return (
     <>
