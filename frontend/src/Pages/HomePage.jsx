@@ -8,7 +8,7 @@ import io from "socket.io-client";
 const HomePage = () => {
   const { userData, setUserData } = useContext(UserContext);
   const [isLoading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(sessionStorage.getItem('activeTab'));
 
   const user = secureLocalStorage.getItem("user");
 
@@ -49,6 +49,11 @@ const HomePage = () => {
   useEffect(() => {
     fetchUser();
   }, []);
+
+  useEffect(()=>{
+    const activetab = sessionStorage.getItem('activeTab');
+    setActiveTab(parseInt(activetab));
+  },[activeTab])
 
   return (
     <>

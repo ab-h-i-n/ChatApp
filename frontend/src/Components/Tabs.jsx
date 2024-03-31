@@ -3,6 +3,8 @@ import React, { useState } from "react";
 const Tabs = ({ activeTab, setActiveTab }) => {
   const handleTabClick = (index) => {
     setActiveTab(index);
+
+    sessionStorage.setItem("activeTab", index.toString());
   };
 
   const tabItems = ["Chats", "Friends", "All Users"];
@@ -29,9 +31,7 @@ const Tabs = ({ activeTab, setActiveTab }) => {
         <div
           id="bar"
           className={`bg-themeOrange h-1 w-[33.33%] absolute bottom-0 transition-all `}
-          style={{
-            left: `${activeTab * 33.33}%`,
-          }}
+          style={{ left: `${activeTab * 33.33}%` }}
         ></div>
       </div>
     </>

@@ -10,11 +10,11 @@ const MainScreen = ({ activeTab }) => {
 
   useEffect(() => {
     if (activeTab === 0) {
-      allChatsRef.current.scrollIntoView({ behavior: "smooth" });
+      allChatsRef.current.scrollIntoView(); // add { behavior: "smooth" } to makae smooth
     } else if (activeTab === 1) {
-      friends.current.scrollIntoView({ behavior: "smooth" });
+      friends.current.scrollIntoView();
     } else if (activeTab === 2) {
-      allUsersRef.current.scrollIntoView({ behavior: "smooth" });
+      allUsersRef.current.scrollIntoView();
     }
   }, [activeTab]);
 
