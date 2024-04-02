@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import secureLocalStorage from "react-secure-storage";
-import UserCard from "../Components/UserCard";
-import { io } from "socket.io-client";
+import AllUserCard from "../Components/AllUserCard";
+import { SocketContext } from "../Context";
 
 const AllUsers = () => {
   const user = secureLocalStorage.getItem("user");
   const ApiUrl = import.meta.env.VITE_API_URL;
   const [allUsers, setAllUsers] = useState();
   const [isLoading, setLoading] = useState(true);
+  const { socket } = useContext(SocketContext);
 
   const fetchAllUsers = () => {
     setLoading(true);
@@ -28,22 +29,11 @@ const AllUsers = () => {
   };
 
   useEffect(() => {
-    fetchAllUsers();
-  }, []);
-
-  useEffect(() => {
-    const socket = io(ApiUrl, {
-      auth: {
-        token: user,
-      },
-    });
-
-    socket.on("userUpdate",()=>{  
+    socket.on("userUpdate", () => {
       console.log("fetching....");
       fetchAllUsers();
-    })
-
-
+    });
+    fetchAllUsers();
   }, []);
 
   useEffect(() => {
@@ -51,14 +41,14 @@ const AllUsers = () => {
   }, [allUsers]);
 
   return (
-    <div className="relative h-[83.5vh] lg:h-[85vh] bg-themeDark w-[100vw] overflow-y-scroll divide-y-[1px] divide-themeNavyDark px-5">
+    <div className="relative h-full w-screen bg-themeDark overflow-y-scroll divide-y-[1px] divide-themeNavyDark px-5">
       {isLoading ? (
         <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
           <div className="loader w-20"></div>
         </div>
       ) : (
         allUsers?.map((OneUser) => (
-          <UserCard key={OneUser?._id} user={OneUser} />
+          <AllUserCard key={OneUser?._id} user={OneUser} />
         ))
       )}
     </div>

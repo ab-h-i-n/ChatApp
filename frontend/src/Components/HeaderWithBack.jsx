@@ -4,9 +4,13 @@ import { useNavigate } from "react-router-dom";
 const HeaderWithBack = ({ text }) => {
   const navigate = useNavigate();
 
+  const handleGoBack = () => {
+    navigate(-1, { replace: true });
+  };
+
   return (
     <div className="bg-themeNavyDark px-3 py-7 sticky top-0 flex items-center gap-5 text-themeNavyLight">
-      <div onClick={() => navigate(-1)}>
+      <div onClick={handleGoBack}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -20,7 +24,6 @@ const HeaderWithBack = ({ text }) => {
           />
         </svg>
       </div>
-
       <div className="font-semibold text-xl">{text}</div>
     </div>
   );

@@ -8,8 +8,8 @@ const Header = ({ activeTab, setActiveTab }) => {
   const { userData } = useContext(UserContext);
 
   return (
-    <div className="z-50 h-[16.5vh] lg:h-[15vh] sticky top-0 w-full bg-themeNavyDark">
-      <div className="p-5 flex items-center justify-between">
+    <div className="bg-themeNavyDark">
+      <div className="p-[1.5rem] flex items-center justify-between">
         {/* logo  */}
         <div className="text-4xl font-semibold text-themeOrange">ChatBox</div>
         {/* profile button  */}

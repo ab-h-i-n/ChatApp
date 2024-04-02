@@ -19,7 +19,7 @@ const MainScreen = ({ activeTab }) => {
   }, [activeTab]);
 
   return (
-    <div className="w-full flex overflow-hidden sticky top-24 lg:top-28">
+    <div className="flex overflow-hidden  ">
       <div ref={allChatsRef} className="w-full ">
         <AllChats />
       </div>

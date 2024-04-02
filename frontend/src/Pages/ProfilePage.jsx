@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import UserDetailBox from "../Components/UserDetailBox";
 import UserProfilePhoto from "../Components/UserProfilePhoto";
 import SubmitButton from "../Components/SubmitButton";
-import { UserContext } from "../Context";
+import { SocketContext, UserContext } from "../Context";
 
 const ProfilePage = () => {
   const [isOwner, setOwner] = useState(false);
@@ -16,6 +16,7 @@ const ProfilePage = () => {
   const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
   const {userData} = useContext(UserContext);
+  const {socket,setSocket} = useContext(SocketContext);
 
 
   const ApiUrl = import.meta.env.VITE_API_URL;
@@ -43,7 +44,9 @@ const ProfilePage = () => {
 
     try {
       setBtnLoading(true);
+      socket.disconnect();
       secureLocalStorage.clear();
+      setSocket(null);
     } catch (error) {
       alert("Error" + error);
     } finally {

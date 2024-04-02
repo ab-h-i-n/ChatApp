@@ -2,6 +2,7 @@ import express from 'express';
 import User from './UserSchema.js';
 import getTimeStamp from './TimeStamp.js';
 import bcrypt, { hash } from 'bcrypt'
+import { io, userSocket } from './index.js';
 
 const router = express.Router();
 
@@ -166,7 +167,8 @@ router.get('/getuser/:id', (req, res) => {
                         email: user.email,
                         profilePhoto: user.profilePhoto,
                         createdAt: user.createdAt,
-                        onlineStatus: user.onlineStatus
+                        onlineStatus: user.onlineStatus,
+                        friendList: user.friendList
                     },
                     error: null
                 })
@@ -255,6 +257,84 @@ router.put('/edit/:key', (req, res) => {
             }
 
         })
+})
+
+router.post('/sendfriendreq', async (req, res) => {
+    try {
+        const sender = await User.findOne({ _id: req.body.from });
+        const recipient = await User.findOne({ _id: req.body.to });
+
+        if (!sender || !recipient) {
+            return res.status(404).json({
+                error: 'Sender or recipient not found!',
+                data: null
+            });
+        }
+
+        sender.friendReq.send.push({
+            to: req.body.to,
+            createdAt: getTimeStamp(),
+            isCompleted: false
+        });
+        await sender.save();
+
+        recipient.friendReq.received.push({
+            from: req.body.from,
+            createdAt: getTimeStamp(),
+        });
+        await recipient.save();
+
+        // Emit friend request event to the recipient
+        io.to(userSocket[recipient._id]).emit("friendRequest", { from: sender._id });
+
+        return res.json({
+            error: null,
+            data: 'Friend request sent successfully!'
+        });
+
+        
+    } catch (error) {
+        console.error('Failed to send request:', error);
+        return res.status(500).json({
+            error: 'Failed to send request!',
+            data: null
+        });
+    }
+});
+
+router.get('/getfriendreq/:id',(req,res)=>{
+
+    try {
+
+        const id = req.params.id;
+
+        User.findOne({_id : id})
+        .then(user => {
+
+            if(user){
+
+                res.json({
+                    error : null,
+                    data : user.friendReq
+                })
+
+            }else{
+
+                res.status(404).json({
+                    error : 'User not found!',
+                    data : null
+                })
+            }
+
+        })
+
+    } catch (error) {
+        
+        res.status(404).json({
+            error : error,
+            data : null
+        })
+    }
 })
 
 

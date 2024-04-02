@@ -24,7 +24,7 @@ const Tabs = ({ activeTab, setActiveTab }) => {
 
   return (
     <>
-      <div className="font-semibold grid grid-cols-3 relative">
+      <div className="z-[50] font-semibold grid grid-cols-3 relative">
         {tabItems.map((item, index) => (
           <Tabitem key={`${item}_${index}`} item={item} index={index} />
         ))}
