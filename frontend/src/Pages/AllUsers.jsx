@@ -48,7 +48,7 @@ const AllUsers = () => {
         </div>
       ) : (
         allUsers?.map((OneUser) => (
-          <AllUserCard key={OneUser?._id} user={OneUser} />
+          <AllUserCard key={OneUser?._id} user={OneUser}  />
         ))
       )}
     </div>

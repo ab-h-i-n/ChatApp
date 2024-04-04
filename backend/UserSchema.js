@@ -50,7 +50,7 @@ const UserSchema = mongoose.Schema({
                     type : String,
                     required : true
                 },
-                isCompleted : {
+                isRejected : {
                     type : Boolean,
                     required : true
                 }

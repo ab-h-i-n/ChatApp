@@ -9,7 +9,7 @@ const HeaderWithBack = ({ text }) => {
   };
 
   return (
-    <div className="bg-themeNavyDark px-3 py-7 sticky top-0 flex items-center gap-5 text-themeNavyLight">
+    <div className="bg-themeNavyDark px-3 py-7 flex items-center gap-5 text-themeNavyLight">
       <div onClick={handleGoBack}>
         <svg
           xmlns="http://www.w3.org/2000/svg"

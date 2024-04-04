@@ -151,7 +151,6 @@ router.post('/checkuserexist', (req, res) => {
 
 })
 
-
 router.get('/getuser/:id', (req, res) => {
 
     const id = req.params.id;
@@ -188,11 +187,43 @@ router.get('/getuser/:id', (req, res) => {
 
 })
 
+router.get('/getuserprofile/:id', (req, res) => {
+
+    const id = req.params.id;
+
+    User.findOne({ _id: id })
+        .then(user => {
+            if (user) {
+                res.json({
+                    data: {
+                        _id: user._id,
+                        name: user.name,
+                        about: user.about,
+                        profilePhoto: user.profilePhoto,
+                        onlineStatus: user.onlineStatus,
+                    },
+                    error: null
+                })
+            } else {
+                res.status(404).json({
+                    data: null,
+                    error: "User does not exists!"
+                })
+            }
+        })
+        .catch(error => {
+            res.status(404).json({
+                data: null,
+                error: "User does not exists!"
+            })
+        })
+
+})
 
 router.post('/allusers', (req, res) => {
     const currentUser = req.body._id;
 
-    User.find({ _id: { $ne: currentUser } }, '_id name about profilePhoto onlineStatus')
+    User.find({ _id: { $ne: currentUser } }, '_id name about profilePhoto onlineStatus friendList')
         .then(users => {
             res.json({
                 data: users,
@@ -205,6 +236,32 @@ router.post('/allusers', (req, res) => {
                 error: "Failed to find users!"
             });
         });
+});
+
+router.get('/getfriendslist/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const user = await User.findOne({ _id: id });
+
+        if (user) {
+            res.json({
+                error: null,
+                data: user.friendList
+            });
+        } else {
+            res.status(404).json({
+                error: 'User not found!',
+                data: null
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Internal server error!',
+            data: null
+        });
+    }
 });
 
 router.put('/edit/:key', (req, res) => {
@@ -271,10 +328,21 @@ router.post('/sendfriendreq', async (req, res) => {
             });
         }
 
+        const isReqAvailabe = sender.friendReq.send.find(requ => requ.to == req.body.to);
+
+        if (isReqAvailabe) {
+            res.status(404).json({
+                error: 'Friend request already sended!',
+                data: null
+            })
+
+            return;
+        }
+
         sender.friendReq.send.push({
             to: req.body.to,
             createdAt: getTimeStamp(),
-            isCompleted: false
+            isRejected: false
         });
         await sender.save();
 
@@ -284,15 +352,16 @@ router.post('/sendfriendreq', async (req, res) => {
         });
         await recipient.save();
 
-        // Emit friend request event to the recipient
-        io.to(userSocket[recipient._id]).emit("friendRequest", { from: sender._id });
+
+        io.to(userSocket[recipient._id]).emit("friendRequest");
+        io.to(userSocket[sender._id]).emit("friendRequest");
 
         return res.json({
             error: null,
             data: 'Friend request sent successfully!'
         });
 
-        
+
     } catch (error) {
         console.error('Failed to send request:', error);
         return res.status(500).json({
@@ -302,40 +371,138 @@ router.post('/sendfriendreq', async (req, res) => {
     }
 });
 
-router.get('/getfriendreq/:id',(req,res)=>{
+router.get('/getfriendreq/:id', (req, res) => {
 
     try {
 
         const id = req.params.id;
 
-        User.findOne({_id : id})
-        .then(user => {
+        User.findOne({ _id: id })
+            .then(user => {
 
-            if(user){
+                if (user) {
 
-                res.json({
-                    error : null,
-                    data : user.friendReq
-                })
+                    res.json({
+                        error: null,
+                        data: user.friendReq
+                    })
 
-            }else{
+                } else {
 
-                res.status(404).json({
-                    error : 'User not found!',
-                    data : null
-                })
-            }
+                    res.status(404).json({
+                        error: 'User not found!',
+                        data: null
+                    })
+                }
 
-        })
+            })
 
     } catch (error) {
-        
+
         res.status(404).json({
-            error : error,
-            data : null
+            error: error,
+            data: null
         })
     }
 })
 
+router.delete('/rejectfriendreq', async (req, res) => {
+
+    try {
+
+        const receiver = await User.findOne({ _id: req.body._id });
+        const sender = await User.findOne({ _id: req.body.sender_id });
+
+        if (!receiver || !sender) {
+            res.status(404).json({
+                data: null,
+                error: 'Sender of receiver not found!'
+            })
+            return;
+        }
+
+
+        const request = await receiver.friendReq.received.find(requ => requ.from == req.body.sender_id)
+        await receiver.friendReq.received.pull(request);
+        await receiver.save();
+
+        const senderrequest = await sender.friendReq.send.find(requ => requ.to == req.body._id && requ.isRejected == false)
+        senderrequest.isRejected = true;
+        await sender.save();
+
+        io.to(userSocket[req.body._id]).emit("friendRequest");
+        io.to(userSocket[req.body.sender_id]).emit("friendRequest");
+
+        res.json({
+            data: "Request rejected!",
+            error: null
+        })
+
+    } catch (error) {
+        res.status(404).json({
+            data: null,
+            error: error
+        })
+    }
+
+})
+
+router.post('/acceptfriendreq', async (req, res) => {
+
+    try {
+
+        const receiver = await User.findOne({ _id: req.body._id });
+        const sender = await User.findOne({ _id: req.body.sender_id });
+
+        if (!receiver || !sender) {
+            res.status(404).json({
+                data: null,
+                error: 'Sender of receiver not found!'
+            })
+            return;
+        }
+
+        //remove request
+        const request = await receiver.friendReq.received.find(requ => requ.from == req.body.sender_id)
+        await receiver.friendReq.received.pull(request);
+
+        //add to firendlist
+        receiver.friendList.push({
+            friend_id: req.body.sender_id,
+            friendFrom: getTimeStamp()
+        })
+
+        await receiver.save();
+
+        //remove request
+        const senderrequest = await sender.friendReq.send.find(requ => requ.to == req.body._id && requ.isRejected == false)
+        await sender.friendReq.send.pull(senderrequest);
+
+        //add to friendlist
+        sender.friendList.push({
+            friend_id: req.body._id,
+            friendFrom: getTimeStamp()
+        })
+
+        await sender.save();
+
+        io.to(userSocket[req.body._id]).emit("friendList");
+        io.to(userSocket[req.body.sender_id]).emit("friendList");
+        io.to(userSocket[req.body._id]).emit("friendRequest");
+        io.to(userSocket[req.body.sender_id]).emit("friendRequest");
+
+        res.json({
+            data: "Request accepted!",
+            error: null
+        })
+
+    } catch (error) {
+        res.status(404).json({
+            data: null,
+            error: error
+        })
+    }
+
+})
 
 export default router;
