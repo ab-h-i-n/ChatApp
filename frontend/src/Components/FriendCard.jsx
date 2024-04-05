@@ -1,16 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProfileIcon from "./ProfileIcon";
 import { SocketContext } from "../Context";
+import secureLocalStorage from "react-secure-storage";
+import OnlineStatus from "./OnlineStatus"
 
-const FriendCard = ({ user }) => {
+const FriendCard = ({ user,setLoading }) => {
   const ApiUrl = import.meta.env.VITE_API_URL;
   const [thisUser, setThisUser] = useState();
-  const [isLoading, setLoading] = useState(true);
   const { socket } = useContext(SocketContext);
+  const navigate = useNavigate();
 
   const fetchUser = () => {
-    setLoading(true);
     fetch(`${ApiUrl}/getuser/${user}`)
       .then((responce) => responce.json())
       .then((json) => {
@@ -23,6 +24,10 @@ const FriendCard = ({ user }) => {
       .then(() => {
         setLoading(false);
       });
+  };
+
+  const handleChat = () => {
+    navigate(`/chat/${thisUser?._id}/${thisUser?.name}`);
   };
 
   useEffect(() => {
@@ -38,22 +43,16 @@ const FriendCard = ({ user }) => {
 
   return (
     <div>
-      <div
-        className="py-5 flex gap-x-5 justify-between items-center"
-      >
+      <div className="py-5 flex gap-x-5 justify-between items-center">
         <Link to={`/user/${thisUser?._id}`} className="relative">
           <ProfileIcon src={thisUser?.profilePhoto} />
 
           {/* status  */}
-          <div
-            className={`${
-              thisUser?.onlineStatus ? "bg-green-600" : "bg-red-600"
-            } absolute w-5 h-5 border-4 border-themeDark rounded-full bottom-0 right-0 `}
-          ></div>
+          <OnlineStatus onlineStatus={thisUser?.onlineStatus}/>
         </Link>
         <div className="flex flex-col w-full justify-start">
           {/* name  */}
-          <div className="text-themeNavyLight font-semibold">
+          <div className="text-themeWhite font-semibold">
             {thisUser?.name}
           </div>
           {/* about  */}
@@ -64,7 +63,7 @@ const FriendCard = ({ user }) => {
 
         {/* add friend icon  */}
 
-        <div className="p-2 cursor-pointer">
+        <div onClick={handleChat} className="p-2 cursor-pointer">
           <img className="w-11 " src="/chat.svg" alt="chat" />
         </div>
       </div>

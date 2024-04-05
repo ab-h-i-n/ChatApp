@@ -12,7 +12,8 @@ export default {
         themeNavyLight: "#738897",
         themeNavy: "#334756",
         themeNavyDark: "#2C394B",
-        themeDark: "#082032"
+        themeDark: "#082032",
+        themeWhite: "#ffffffd1"
       }
     },
   },

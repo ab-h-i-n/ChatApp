@@ -42,7 +42,7 @@ const UserDetailBox = ({ thisUser, title, value, isEditable, isOwner }) => {
           {/* title  */}
           <div className="text-themeNavyLight font-medium">{title}</div>
           {/* value  */}
-          <div className="text-white font-medium">{value}</div>
+          <div className="text-themeWhite font-medium">{value}</div>
         </div>
 
         {/* edit icon  */}

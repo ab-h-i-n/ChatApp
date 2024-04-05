@@ -8,6 +8,7 @@ import HomePage from "./Pages/HomePage";
 import ProfilePage from "./Pages/ProfilePage";
 import FriendRequestPage from "./Pages/FriendRequestPage";
 import { SocketContext } from "./Context";
+import ChatPage from "./Pages/ChatPage";
 
 function App() {
   
@@ -24,6 +25,7 @@ function App() {
           <Route path="/" element={<ProtectedRoute> <HomePage/> </ProtectedRoute>} />
           <Route path="/user/:id" element={<ProtectedRoute> <ProfilePage/> </ProtectedRoute>} />
           <Route path="/friendrequests" element={<ProtectedRoute> <FriendRequestPage/> </ProtectedRoute>} />
+          <Route path="/chat/:id/:username" element={<ProtectedRoute> <ChatPage/> </ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
       </SocketContext.Provider>
