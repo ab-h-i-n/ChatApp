@@ -6,11 +6,13 @@ import ChatInputBox from '../Components/ChatInputBox';
 const ChatPage = () => {
   const [user,setUser] = useState();
 
+
+
   return (
     <div className='h-screen grid grid-rows-[100px,1fr]'>
       <ChatPageHeader user={user} setUser={setUser} />
-      <ChatsContainer/>
-      <ChatInputBox/>
+      <ChatsContainer user={user}/>
+      <ChatInputBox user={user} />
     </div>
   )
 }

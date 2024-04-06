@@ -21,6 +21,9 @@ const Friends = () => {
           } else {
             setFriendsList(json.data);
           }
+        })
+        .then(() => {
+          setLoading(false);
         });
     } catch (error) {
       console.error("Error fetching friends!");

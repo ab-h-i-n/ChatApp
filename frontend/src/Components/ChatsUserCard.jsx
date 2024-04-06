@@ -1,19 +1,19 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import ProfileIcon from "./ProfileIcon";
-import { SocketContext } from "../Context";
-import secureLocalStorage from "react-secure-storage";
+import {SocketContext} from "../Context";
 import OnlineStatus from "./OnlineStatus"
 
-const FriendCard = ({ user,setLoading }) => {
-  const ApiUrl = import.meta.env.VITE_API_URL;
+const ChatsUserCard = ({user}) => {
+    const ApiUrl = import.meta.env.VITE_API_URL;
   const [thisUser, setThisUser] = useState();
+  const [isLoading,setLoading] = useState();
   const { socket } = useContext(SocketContext);
   const navigate = useNavigate();
 
   const fetchUser = () => {
     setLoading(true);
-    fetch(`${ApiUrl}/getuser/${user}`)
+    fetch(`${ApiUrl}/getuser/${user.friend_id}`)
       .then((responce) => responce.json())
       .then((json) => {
         if (json.error) {
@@ -42,9 +42,10 @@ const FriendCard = ({ user,setLoading }) => {
     console.log(thisUser);
   }, [thisUser]);
 
+
   return (
-    <div>
-      <div className="py-5 flex gap-x-5 justify-between items-center">
+    <>
+      <div onClick={handleChat} className="py-5 flex gap-x-5 justify-between items-center">
         <Link to={`/user/${thisUser?._id}`} className="relative">
           <ProfileIcon src={thisUser?.profilePhoto} />
 
@@ -61,15 +62,10 @@ const FriendCard = ({ user,setLoading }) => {
             {thisUser?.about}
           </div>
         </div>
-
-        {/* add friend icon  */}
-
-        <div onClick={handleChat} className="p-2 cursor-pointer">
-          <img className="w-11 " src="/chat.svg" alt="chat" />
-        </div>
       </div>
-    </div>
-  );
-};
+    </>
+  )
+}
 
-export default FriendCard;
+export default ChatsUserCard
+

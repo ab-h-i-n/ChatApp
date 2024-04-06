@@ -37,6 +37,10 @@ const UserSchema = mongoose.Schema({
         friendFrom:{
             type : String,
             required:true
+        },
+        hasChated : {
+            type:Boolean,
+            required: true
         }
     }],
     friendReq : {

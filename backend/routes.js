@@ -3,6 +3,10 @@ import User from './UserSchema.js';
 import getTimeStamp from './TimeStamp.js';
 import bcrypt, { hash } from 'bcrypt'
 import { io, userSocket } from './index.js';
+import Chat from './ChatSchema.js';
+import { Types } from 'mongoose';
+
+const ObjectId =  Types.ObjectId;
 
 const router = express.Router();
 
@@ -469,7 +473,8 @@ router.post('/acceptfriendreq', async (req, res) => {
         //add to firendlist
         receiver.friendList.push({
             friend_id: req.body.sender_id,
-            friendFrom: getTimeStamp()
+            friendFrom: getTimeStamp(),
+            hasChated:false
         })
 
         await receiver.save();
@@ -481,7 +486,8 @@ router.post('/acceptfriendreq', async (req, res) => {
         //add to friendlist
         sender.friendList.push({
             friend_id: req.body._id,
-            friendFrom: getTimeStamp()
+            friendFrom: getTimeStamp(),
+            hasChated:false
         })
 
         await sender.save();
@@ -504,5 +510,79 @@ router.post('/acceptfriendreq', async (req, res) => {
     }
 
 })
+
+router.get('/getChat/:roomid', (req, res) => {
+
+    const roomId = req.params.roomid;
+
+    try {
+
+        Chat.findOne({ room_id: roomId })
+            .then(msgs => {
+
+                if (msgs) {
+
+                    res.json({
+                        data: msgs,
+                        error: null
+                    })
+                } else {
+
+                    const newChat = new Chat({
+                        room_id: roomId,
+                        messages: []
+                    })
+
+                    newChat.save().then(() => {
+
+                        res.json({
+                            data: null,
+                            error: null
+                        })
+                    })
+
+
+                }
+
+            })
+
+    } catch (error) {
+
+        res.status(500).json({
+            data: null,
+            error: 'Internal server error~'
+        })
+    }
+
+})
+
+
+router.get('/allchats/:id', async (req, res) => {
+    const id = req.params.id;
+console.log(id)
+    try {
+        const user = await User.aggregate([
+            { $match: { _id: new ObjectId(id) } },
+            { $unwind: '$friendList' }, // Unwind friendList array
+            { $match: { 'friendList.hasChated': true } }, // Match only hasChated:true documents
+            {
+                $group: {
+                  _id: '$_id',
+                  friendList: { $push: '$friendList' } // Push filtered documents back into an array
+                }
+            }
+            
+        ]).exec();
+
+        res.json({
+            error : null,
+            data : user[0]?.friendList 
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json(error);
+    }
+});
+
 
 export default router;
