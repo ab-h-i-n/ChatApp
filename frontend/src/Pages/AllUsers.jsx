@@ -30,7 +30,6 @@ const AllUsers = () => {
 
   useEffect(() => {
     socket.on("userUpdate", (data) => {
-      setAllUsers(data);
       console.log(data);
     });
     fetchAllUsers();
