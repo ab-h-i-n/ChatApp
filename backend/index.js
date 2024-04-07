@@ -7,6 +7,7 @@ import { Server } from 'socket.io';
 import User from './UserSchema.js';
 import Chat from './ChatSchema.js';
 import getTimeStamp from './TimeStamp.js';
+import getAllUsers from './GetAllUsers.js';
 
 const app = express();
 dotenv.config();
@@ -51,7 +52,8 @@ io.on("connect", async (socket) => {
   const userId = socket.handshake.auth.token;
   console.log(userId, '....', socket.id);
   await User.findOneAndUpdate({ _id: userId }, { $set: { onlineStatus: true } });
-  socket.broadcast.emit("userUpdate");
+  const allUsers = getAllUsers(userId);
+  socket.broadcast.emit("userUpdate" ,({ data : allUsers }));
 
   userSocket[userId] = socket.id;
 

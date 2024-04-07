@@ -29,9 +29,9 @@ const AllUsers = () => {
   };
 
   useEffect(() => {
-    socket.on("userUpdate", () => {
-      console.log("fetching....");
-      fetchAllUsers();
+    socket.on("userUpdate", (data) => {
+      setAllUsers(data);
+      console.log(data);
     });
     fetchAllUsers();
   }, []);
