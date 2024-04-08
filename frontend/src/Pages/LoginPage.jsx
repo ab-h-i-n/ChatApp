@@ -35,6 +35,7 @@ const LoginPage = () => {
             alert(`Error : ${json.error}`);
           } else {
             secureLocalStorage.setItem("user", json.data._id);
+            localStorage.setItem('hasLoggedIn',true);
             alert("User Logged in succefully!");
             navigate("/");
           }

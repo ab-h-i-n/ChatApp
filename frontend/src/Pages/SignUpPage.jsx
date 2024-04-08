@@ -87,6 +87,7 @@ const SignUpPage = () => {
           alert(`Error : ${json.error}`);
         } else {
           secureLocalStorage.setItem("user", json.data._id);
+          localStorage.setItem('hasLoggedIn',true);
           alert("User Created Succefully!");
           navigate("/");
         }

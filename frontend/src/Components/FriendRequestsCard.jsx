@@ -49,7 +49,7 @@ const FriendRequestsCard = () => {
       {/* count  */}
       <div className="flex items-center justify-center">
         {/* for animation  */}
-        <div className="w-8 aspect-square bg-themeOrange animate-ping absolute rounded-full"></div>
+        <div className={`w-8 aspect-square bg-themeOrange animate-ping absolute rounded-full ${receivedReq?.length == 0 ? 'hidden' : ''}`}></div>
         <div className="w-7 grid place-items-center aspect-square bg-themeOrange rounded-full text-white">
           {receivedReq?.length || "0"}
         </div>

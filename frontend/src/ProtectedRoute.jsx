@@ -1,10 +1,13 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import secureLocalStorage from "react-secure-storage";
 
-const ProtectedRoute = ({ children }) => {
-  var user = secureLocalStorage.getItem("user");
-  return <>{user ? children : <Navigate to={"/login"} />}</>;
-};
+function ProtectedRoute({children}) {
+
+  const hasLoggedIn = localStorage.getItem('hasLoggedIn');
+
+  console.log(hasLoggedIn);
+
+  return !hasLoggedIn ? <Navigate to={'/login'} /> : children;
+}
 
 export default ProtectedRoute;
