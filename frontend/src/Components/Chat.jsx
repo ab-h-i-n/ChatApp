@@ -16,7 +16,7 @@ const Chat = ({chat}) => {
   return (
     <>
 
-        <div className={`text-themeWhite flex ${isCurrentUser ? 'justify-end' : ''}`}>
+        <div className={`text-themeWhite flex transition-all ${isCurrentUser ? 'justify-end ' : 'justify-start'}`}>
             <div className={`rounded-xl px-3 p-1 max-w-[200px] ${isCurrentUser ? 'bg-themeOrange justify-end rounded-br-none' : 'bg-themeNavyLight rounded-bl-none'} `}>{chat.message}</div>
         </div>
 

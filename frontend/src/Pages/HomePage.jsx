@@ -66,7 +66,7 @@ const HomePage = () => {
           <div className="loader w-20 "></div>
         </div>
       ) : (
-        <div className={`xl:max-w-[600px] h-screen grid grid-rows-[150px,1fr]`}>
+        <div className={`lg:max-w-[600px] h-screen grid grid-rows-[150px,1fr]`}>
           <Header activeTab={activeTab} setActiveTab={setActiveTab} />
           <MainScreen activeTab={activeTab} />
         </div>

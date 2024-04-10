@@ -20,13 +20,13 @@ const MainScreen = ({ activeTab }) => {
 
   return (
     <div className="flex overflow-hidden  ">
-      <div ref={allChatsRef} className="w-full ">
+      <div ref={allChatsRef} className="w-full max-w-[600px] ">
         <AllChats />
       </div>
-      <div ref={friends} className="w-full">
+      <div ref={friends} className="w-full max-w-[600px]">
         <Friends />
       </div>
-      <div ref={allUsersRef} className="w-full">
+      <div ref={allUsersRef} className="w-full max-w-[600px]">
         <AllUsers />
       </div>
     </div>

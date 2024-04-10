@@ -36,7 +36,7 @@ const AllChats = () => {
     fetchChats();
   },[])
 
-  return <div className="bg-themeDark h-full w-screen px-5 divide-y-[1px] divide-themeNavyDark">
+  return <div className="bg-themeDark h-full  w-screen lg:w-[600px] px-5 divide-y-[1px] divide-themeNavyDark">
     
   {
     chats?.map(user => (

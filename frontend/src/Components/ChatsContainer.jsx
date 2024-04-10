@@ -3,6 +3,7 @@ import { SocketContext } from "../Context";
 import secureLocalStorage from "react-secure-storage";
 import { useParams } from "react-router-dom";
 import Chat from "./Chat";
+import ChatInputBox from "./ChatInputBox";
 
 const ChatsContainer = ({ user }) => {
   const { id } = useParams();
@@ -40,17 +41,20 @@ const ChatsContainer = ({ user }) => {
     });
   }, []);
 
-  return <div className="p-3 flex flex-col gap-y-3">
+  useEffect(() => {
+    window.scrollTo(0, document.body.scrollHeight);
+  }, [chat]);
 
-    {
-      chat?.messages.map(c => (
-
-        <Chat key={c._id} chat={c}/>
-
-      ))
-    }
-
-  </div>;
+  return (
+    <>
+      <div className="p-3 flex flex-col gap-y-3 overflow-y-auto pb-28">
+        {chat?.messages.map((c) => (
+          <Chat key={c._id} chat={c} />
+        ))}
+      </div>
+      <ChatInputBox user={user} />
+    </>
+  );
 };
 
 export default ChatsContainer;

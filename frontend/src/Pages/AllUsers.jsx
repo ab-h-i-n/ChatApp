@@ -40,7 +40,7 @@ const AllUsers = () => {
   }, [allUsers]);
 
   return (
-    <div className="relative h-full w-screen bg-themeDark overflow-y-scroll divide-y-[1px] divide-themeNavyDark px-5">
+    <div className="relative h-full  w-screen lg:w-[600px] bg-themeDark overflow-y-auto divide-y-[1px] divide-themeNavyDark px-5">
       {isLoading ? (
         <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
           <div className="loader w-20"></div>

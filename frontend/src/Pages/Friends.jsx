@@ -35,7 +35,7 @@ const Friends = () => {
   }, []);
 
   return (
-    <div className="h-full w-screen bg-themeDark relative">
+    <div className="h-full w-screen lg:w-[600px] bg-themeDark relative">
       {/* when loading  */}
       <div
         className={`${
