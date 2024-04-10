@@ -42,12 +42,17 @@ const ChatsContainer = ({ user }) => {
   }, []);
 
   useEffect(() => {
-    window.scrollTo(0, document.body.scrollHeight);
+    if (chat) {
+      const chatContainer = document.querySelector(".chat-container");
+      if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+    }
   }, [chat]);
 
   return (
     <>
-      <div className="p-3 flex flex-col gap-y-3 overflow-y-auto pb-28">
+      <div className="p-3 flex flex-col gap-y-3 overflow-y-auto pb-28 chat-container">
         {chat?.messages.map((c) => (
           <Chat key={c._id} chat={c} />
         ))}
@@ -56,5 +61,6 @@ const ChatsContainer = ({ user }) => {
     </>
   );
 };
+
 
 export default ChatsContainer;

@@ -110,3 +110,7 @@ body {
     background-position: 100% 100%, 50% 0, 0 100%;
   }
 }
+
+.chat-container::-webkit-scrollbar{
+  display: none;
+}
